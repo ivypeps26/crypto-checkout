@@ -120,7 +120,7 @@
           option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
           productSelect.appendChild(option);
         });
-
+updateProductInfo();
         document.getElementById("status").innerText = "";
       } catch (error) {
         document.getElementById("status").innerText = "Error loading products.";
