@@ -186,16 +186,17 @@ updateProductInfo();
       } catch (error) {
         document.getElementById("status").innerText = "Error submitting order.";
       }
-    }
+ function openMoonPay() {
+  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
+  const url = "https://buy.moonpay.com/?currencyCode=eth&walletAddress=" + encodeURIComponent(wallet);
+  window.open(url, "_blank");
+ }   
 function copyWallet() {
   const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
   navigator.clipboard.writeText(wallet);
   document.getElementById("status").innerText = "✅ Wallet address copied!";
 }
-  function openMoonPay() {
-  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
-  const url = "https://buy.moonpay.com/?currencyCode=eth&walletAddress=" + wallet;
-  window.open(url, "_blank");
+
   }
     loadProducts();
   </script>
