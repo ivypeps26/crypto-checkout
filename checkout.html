@@ -74,6 +74,7 @@
 
   <div class="info">
     <<p>Price: €<span id="price">0</span></p>
+<p>Express post: €10</p>
 <p>Total: €<span id="total">0</span></p>
     <p>Total: €<span id="total">0</span></p>
   </div>
@@ -113,7 +114,7 @@ async function loadProducts() {
     });
 
   } catch (error) {
-    document.getElementById("status").innerText = "Error loading products.";
+    document.getElementById("total").innerText = (product.price * quantity) + 10;
   }
 }
 
