@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crypto Checkout</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .box {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #00c853;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .wallet {
+      background: #333;
+      padding: 10px;
+      margin: 10px 0;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Crypto Checkout (ETH)</h2>
+
+  <p><b>Send ETH to this wallet:</b></p>
+  <div class="wallet" id="wallet"0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624/div>
+
+  <p>Enter your email:</p>
+  <input type="email" id="email" placeholder="Email">
+
+  <p>Transaction Hash (TXID):</p>
+  <input type="text" id="txid" placeholder="Paste ETH transaction hash">
+
+  <button onclick="submitOrder()">Submit Order</button>
+
+  <p id="status"></p>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
+
+function submitOrder() {
+  const email = document.getElementById("email").value;
+  const txid = document.getElementById("txid").value;
+
+  if (!email || !txid) {
+    document.getElementById("status").innerText = "Please fill all fields.";
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      email: email,
+      txid: txid
+    })
+  })
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("status").innerText = "Order submitted!";
+  })
+  .catch(err => {
+    document.getElementById("status").innerText = "Error submitting order.";
+  });
+}
+</script>
+
+</body>
+</html>
