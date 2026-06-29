@@ -98,6 +98,11 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z
 
 let products = [];
 
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
+
+let products = [];
+
 async function loadProducts() {
   try {
     const response = await fetch(SCRIPT_URL + "?action=products");
@@ -114,8 +119,10 @@ async function loadProducts() {
     });
 
   } catch (error) {
-   const total = (product.price * quantity) + 10;
-document.getElementById("total").innerText = total.toFixed(2); + 10; }
+    document.getElementById("status").innerText = "Error loading products.";
+  }
+}
+
 function updateProductInfo() {
   const productId = document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value) || 1;
@@ -130,12 +137,13 @@ function updateProductInfo() {
     return;
   }
 
-  const total = (product.price * quantity) + deliveryFee;
+  const total = (Number(product.price) * quantity) + deliveryFee;
 
   document.getElementById("price").innerText = Number(product.price).toFixed(2);
   document.getElementById("stock").innerText = product.stock;
   document.getElementById("total").innerText = total.toFixed(2);
 }
+
 async function submitOrder() {
   const productId = document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value);
@@ -183,3 +191,4 @@ loadProducts();
 
 </body>
 </html>
+      
