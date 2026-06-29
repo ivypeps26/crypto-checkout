@@ -1,213 +1,163 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Crypto Checkout</title>
+  <title>Generic Crypto Checkout Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .box {
-      background: #222;
-      max-width: 430px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-    }
-
-    select, input, button {
-      width: 95%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-      font-size: 15px;
-    }
-
-    button {
-      background: #00c853;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .wallet, .info {
-      background: #333;
-      padding: 12px;
-      border-radius: 6px;
-      word-break: break-all;
-      margin: 10px 0;
-    }
-
-    #status {
-      font-size: 18px;
-      margin-top: 15px;
-    }
+    body { font-family: Arial, sans-serif; background:#111; color:white; padding:20px; text-align:center; }
+    .box { background:#222; max-width:430px; margin:auto; padding:20px; border-radius:12px; }
+    select, input, button { width:95%; padding:12px; margin:10px 0; border-radius:6px; border:none; font-size:15px; }
+    button { background:#00c853; color:white; font-weight:bold; cursor:pointer; }
+    .wallet, .info { background:#333; padding:12px; border-radius:6px; word-break:break-all; margin:10px 0; }
+    img { margin:15px auto; display:block; background:white; padding:10px; border-radius:8px; }
+    #status { font-size:18px; margin-top:15px; }
   </style>
 </head>
 
 <body>
-  <div class="box">
-    <h2>Crypto Checkout (ETH)</h2>
+<div class="box">
+  <h2>Crypto Checkout Demo (ETH)</h2>
 
-    <p><b>Send ETH to this wallet:</b></p>
-    <div class="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
+  <p><b>Send ETH to this wallet:</b></p>
+  <div class="wallet" id="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
 
-    <button onclick="copyWallet()">Copy Wallet Address</button>
+  <button onclick="copyWallet()">📋 Copy Wallet Address</button>
+  <button onclick="openMoonPay()">Buy ETH with MoonPay</button>
 
+  <img src="https://quickchart.io/qr?text=0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624&size=220" alt="Wallet QR Code">
 
- <button onclick="openMoonPay()">Buy ETH with MoonPay</button>   
+  <label>Choose product:</label>
+  <select id="product" onchange="updateProductInfo()">
+    <option value="">Loading products...</option>
+  </select>
 
-<!-- QR code image would go here -->
-
-   
-    <img 
-  src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624" 
-  alt="ETH Wallet QR Code"
-  style="margin:15px auto; display:block; background:white; padding:10px; border-radius:8px;"
-<label>Choose product:</label>
-
-<select id="product" onchange="updateProductInfo()">
-  <option value="">Loading products...</option>
-</select>
-
-    <div class="info">
-      <p>Price: €<span id="price">0.00</span></p>
-      <p>Stock: <span id="stock">0</span></p>
-      <p>Express Post: €10.00</p>
-<p>Crypto Handling Fee: €5.00</p>
-<p>Total: €<span id="total">0.00</span></p>
-    </div>
-
-    <label>Quantity:</label>
-    <input type="number" id="quantity" min="1" value="1" oninput="updateProductInfo()">
-
-    <label>Email:</label>
-    <input type="email" id="email" placeholder="Your email">
-
-    <label>Transaction Hash (TXID):</label>
-    <input type="text" id="txid" placeholder="Paste ETH transaction hash">
-
-    <button onclick="submitOrder()">Submit Order</button>
-
-    <p id="status"></p>
+  <div class="info">
+    <p>Price: €<span id="price">0.00</span></p>
+    <p>Stock: <span id="stock">0</span></p>
+    <p>Express Post: €10.00</p>
+    <p>Crypto Handling Fee: €5.00</p>
+    <p>Total: €<span id="total">0.00</span></p>
   </div>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
-    const DELIVERY_FEE = 10;
-    const CRYPTO_FEE = 5;
+  <label>Quantity:</label>
+  <input type="number" id="quantity" min="1" value="1" oninput="updateProductInfo()">
 
-    let products = [];
+  <label>Email:</label>
+  <input type="email" id="email" placeholder="Your email">
 
-    async function loadProducts() {
-      try {
-        const response = await fetch(SCRIPT_URL + "?action=products");
-        products = await response.json();
+  <label>Transaction Hash (TXID):</label>
+  <input type="text" id="txid" placeholder="Paste ETH transaction hash">
 
-        const productSelect = document.getElementById("product");
-        productSelect.innerHTML = '<option value="">Select a product</option>';
+  <button onclick="submitOrder()">Submit Order</button>
 
-        products.forEach(product => {
-          const option = document.createElement("option");
-          option.value = product.id;
-          option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
-          productSelect.appendChild(option);
-        });
-updateProductInfo();
-        document.getElementById("status").innerText = "";
-      } catch (error) {
-        document.getElementById("status").innerText = "Error loading products.";
-      }
-    }
+  <p id="status"></p>
+</div>
 
-    function updateProductInfo() {
-      const productId = document.getElementById("product").value;
-      const quantity = Number(document.getElementById("quantity").value) || 1;
-      const product = products.find(p => p.id === productId);
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
+const WALLET = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
+const DELIVERY_FEE = 10;
+const CRYPTO_FEE = 5;
 
-      if (!product) {
-        document.getElementById("price").innerText = "0.00";
-        document.getElementById("stock").innerText = "0";
-        document.getElementById("total").innerText = "0.00";
-        return;
-      }
+let products = [];
 
-      const itemTotal = Number(product.price) * quantity;
-      const total = itemTotal + DELIVERY_FEE + CRYPTO_FEE;
+async function loadProducts() {
+  try {
+    const response = await fetch(SCRIPT_URL + "?action=products");
+    products = await response.json();
 
-      document.getElementById("price").innerText = Number(product.price).toFixed(2);
-      document.getElementById("stock").innerText = product.stock;
-      document.getElementById("total").innerText = total.toFixed(2);
-    }
+    const productSelect = document.getElementById("product");
+    productSelect.innerHTML = '<option value="">Select a product</option>';
 
-    async function submitOrder() {
-      const productId = document.getElementById("product").value;
-      const quantity = Number(document.getElementById("quantity").value);
-      const email = document.getElementById("email").value.trim();
-      const txid = document.getElementById("txid").value.trim();
+    products.forEach(product => {
+      const option = document.createElement("option");
+      option.value = product.id;
+      option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
+      productSelect.appendChild(option);
+    });
 
-      if (!productId || !quantity || !email || !txid) {
-        document.getElementById("status").innerText = "Please fill all fields.";
-        return;
-      }
-
-      document.getElementById("status").innerText = "Submitting order...";
-
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            productId: productId,
-            quantity: quantity,
-            email: email,
-            txid: txid,
-            deliveryFee: DELIVERY_FEE
-          })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          document.getElementById("status").innerText =
-            "Order submitted! Order ID: " + result.orderId;
-
-          await loadProducts();
-          updateProductInfo();
-        } else {
-          document.getElementById("status").innerText = "Error: " + result.error;
-        }
-      } catch (error) {
-        document.getElementById("status").innerText = "Error submitting order.";
-      }
-  function openMoonPay() {
-  alert("MoonPay button works");
+    document.getElementById("status").innerText = "";
+  } catch (error) {
+    document.getElementById("status").innerText = "Error loading products.";
   }
-  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
-  const amount = document.getElementById("total").innerText;
+}
 
-  function openMoonPay() {
-  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
-  const amount = document.getElementById("total").innerText;
+function updateProductInfo() {
+  const productId = document.getElementById("product").value;
+  const quantity = Number(document.getElementById("quantity").value) || 1;
+  const product = products.find(p => p.id === productId);
 
+  if (!product) {
+    document.getElementById("price").innerText = "0.00";
+    document.getElementById("stock").innerText = "0";
+    document.getElementById("total").innerText = "0.00";
+    return;
+  }
+
+  const total = (Number(product.price) * quantity) + DELIVERY_FEE + CRYPTO_FEE;
+
+  document.getElementById("price").innerText = Number(product.price).toFixed(2);
+  document.getElementById("stock").innerText = product.stock;
+  document.getElementById("total").innerText = total.toFixed(2);
+}
+
+function copyWallet() {
+  navigator.clipboard.writeText(WALLET);
+  document.getElementById("status").innerText = "✅ Wallet address copied!";
+}
+
+function openMoonPay() {
+  const amount = document.getElementById("total").innerText || "0";
   const url =
     "https://buy.moonpay.com/?currencyCode=eth" +
-    "&baseCurrencyAmount=" + amount +
+    "&baseCurrencyAmount=" + encodeURIComponent(amount) +
     "&baseCurrencyCode=eur" +
-    "&walletAddress=" + encodeURIComponent(wallet);
+    "&walletAddress=" + encodeURIComponent(WALLET);
 
   window.location.href = url;
-    {}
+}
+
+async function submitOrder() {
+  const productId = document.getElementById("product").value;
+  const quantity = Number(document.getElementById("quantity").value);
+  const email = document.getElementById("email").value.trim();
+  const txid = document.getElementById("txid").value.trim();
+
+  if (!productId || !quantity || !email || !txid) {
+    document.getElementById("status").innerText = "Please fill all fields.";
+    return;
+  }
+
+  document.getElementById("status").innerText = "Submitting order...";
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity,
+        email: email,
+        txid: txid,
+        deliveryFee: DELIVERY_FEE,
+        cryptoFee: CRYPTO_FEE
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById("status").innerText = "Order submitted! Order ID: " + result.orderId;
+      await loadProducts();
+      updateProductInfo();
+    } else {
+      document.getElementById("status").innerText = "Error: " + result.error;
+    }
+  } catch (error) {
+    document.getElementById("status").innerText = "Error submitting order.";
+  }
+}
 
 loadProducts();
-  
-    loadProducts();
-  </script>
+</script>
 </body>
 </html>
