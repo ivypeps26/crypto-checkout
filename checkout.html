@@ -115,28 +115,27 @@ async function loadProducts() {
 
   } catch (error) {
    const total = (product.price * quantity) + 10;
-document.getElementById("total").innerText = total.toFixed(2); + 10;
-  }
-}
-
+document.getElementById("total").innerText = total.toFixed(2); + 10; }
 function updateProductInfo() {
   const productId = document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value) || 1;
+  const deliveryFee = 10;
 
   const product = products.find(p => p.id === productId);
 
   if (!product) {
-    document.getElementById("price").innerText = "0";
+    document.getElementById("price").innerText = "0.00";
     document.getElementById("stock").innerText = "0";
-    document.getElementById("total").innerText = "0";
+    document.getElementById("total").innerText = "0.00";
     return;
   }
 
-  document.getElementById("price").innerText = product.price;
-  document.getElementById("stock").innerText = product.stock;
-  document.getElementById("total").innerText = product.price * quantity;
-}
+  const total = (product.price * quantity) + deliveryFee;
 
+  document.getElementById("price").innerText = Number(product.price).toFixed(2);
+  document.getElementById("stock").innerText = product.stock;
+  document.getElementById("total").innerText = total.toFixed(2);
+}
 async function submitOrder() {
   const productId = document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value);
