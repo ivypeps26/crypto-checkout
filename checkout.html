@@ -98,14 +98,13 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z
 
 let products = [];
 
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
 
-let products = [];
 
 async function loadProducts() {
   try {
-    const response = await fetch(SCRIPT_URL + "?action=products");
+    const response = await 
+      fetch(SCRIPT_URL + "?
+            action=products");
     products = await response.json();
 
     const productSelect = document.getElementById("product");
