@@ -207,7 +207,21 @@ async function submitOrder() {
     document.getElementById("status").innerText = "Error submitting order.";
   }
 }
+let currentEthAmount = "";
 
+function updateEthAmount() {
+  const totalEur = Number(document.getElementById("total").innerText) || 0;
+  const ethRateEur = 3000; // temporary estimate: 1 ETH = €3000
+  const ethAmount = totalEur / ethRateEur;
+
+  currentEthAmount = ethAmount.toFixed(6);
+  document.getElementById("ethAmount").innerText = currentEthAmount + " ETH";
+}
+
+function copyEthAmount() {
+  navigator.clipboard.writeText(currentEthAmount);
+  document.getElementById("status").innerText = "ETH amount copied!";
+}
 loadProducts();
 </script>
 </body>
