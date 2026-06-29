@@ -199,7 +199,7 @@ async function submitOrder() {
         "Order submitted! Order ID: " + result.orderId;
 
       await loadProducts();
-      updateProductInfo();
+      document.getElementById("total").innerText = total.toFixed(2);;
     } else {
       document.getElementById("status").innerText = "Error: " + result.error;
     }
