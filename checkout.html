@@ -3,55 +3,102 @@
 <head>
   <title>Generic Crypto Checkout Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    body { font-family: Arial, sans-serif; background:#111; color:white; padding:20px; text-align:center; }
-    .box { background:#222; max-width:430px; margin:auto; padding:20px; border-radius:12px; }
-    select, input, button { width:95%; padding:12px; margin:10px 0; border-radius:6px; border:none; font-size:15px; }
-    button { background:#00c853; color:white; font-weight:bold; cursor:pointer; }
-    .wallet, .info { background:#333; padding:12px; border-radius:6px; word-break:break-all; margin:10px 0; }
-    img { margin:15px auto; display:block; background:white; padding:10px; border-radius:8px; }
-    #status { font-size:18px; margin-top:15px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .box {
+      background: #222;
+      max-width: 430px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    select, input, button {
+      width: 95%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 15px;
+    }
+
+    button {
+      background: #00c853;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .wallet, .info {
+      background: #333;
+      padding: 12px;
+      border-radius: 6px;
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    img {
+      margin: 15px auto;
+      display: block;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 220px;
+    }
+
+    #status {
+      font-size: 18px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 
 <body>
-<div class="box">
-  <h2>Crypto Checkout Demo (ETH)</h2>
+  <div class="box">
+    <h2>Generic Crypto Checkout Demo (ETH)</h2>
 
-  <p><b>Send ETH to this wallet:</b></p>
-  <div class="wallet" id="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
+    <p><b>Send ETH to this wallet:</b></p>
+    <div class="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
 
-  <button onclick="copyWallet()">📋 Copy Wallet Address</button>
-  <button onclick="openMoonPay()">Buy ETH with MoonPay</button>
+    <button onclick="copyWallet()">Copy Wallet Address</button>
+    <button onclick="openMoonPay()">Buy ETH with MoonPay</button>
 
-  <img src="https://quickchart.io/qr?text=0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624&size=220" alt="Wallet QR Code">
+    <img src="https://quickchart.io/qr?text=0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624&size=220" alt="Wallet QR Code">
 
-  <label>Choose product:</label>
-  <select id="product" onchange="updateProductInfo()">
-    <option value="">Loading products...</option>
-  </select>
+    <label>Choose product:</label>
+    <select id="product" onchange="updateProductInfo()">
+      <option value="">Loading products...</option>
+    </select>
 
-  <div class="info">
-    <p>Price: €<span id="price">0.00</span></p>
-    <p>Stock: <span id="stock">0</span></p>
-    <p>Express Post: €10.00</p>
-    <p>Crypto Handling Fee: €5.00</p>
-    <p>Total: €<span id="total">0.00</span></p>
+    <div class="info">
+      <p>Price: €<span id="price">0.00</span></p>
+      <p>Stock: <span id="stock">0</span></p>
+      <p>Express Post: €10.00</p>
+      <p>Crypto Handling Fee: €5.00</p>
+      <p>Total: €<span id="total">0.00</span></p>
+    </div>
+
+    <label>Quantity:</label>
+    <input type="number" id="quantity" min="1" value="1" oninput="updateProductInfo()">
+
+    <label>Email:</label>
+    <input type="email" id="email" placeholder="Your email">
+
+    <label>Transaction Hash (TXID):</label>
+    <input type="text" id="txid" placeholder="Paste ETH transaction hash">
+
+    <button onclick="submitOrder()">Submit Order</button>
+
+    <p id="status"></p>
   </div>
-
-  <label>Quantity:</label>
-  <input type="number" id="quantity" min="1" value="1" oninput="updateProductInfo()">
-
-  <label>Email:</label>
-  <input type="email" id="email" placeholder="Your email">
-
-  <label>Transaction Hash (TXID):</label>
-  <input type="text" id="txid" placeholder="Paste ETH transaction hash">
-
-  <button onclick="submitOrder()">Submit Order</button>
-
-  <p id="status"></p>
-</div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
@@ -103,7 +150,7 @@ function updateProductInfo() {
 
 function copyWallet() {
   navigator.clipboard.writeText(WALLET);
-  document.getElementById("status").innerText = "✅ Wallet address copied!";
+  document.getElementById("status").innerText = "Wallet address copied!";
 }
 
 function openMoonPay() {
@@ -134,10 +181,10 @@ async function submitOrder() {
     const response = await fetch(SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify({
-        productId: productId,
-        quantity: quantity,
-        email: email,
-        txid: txid,
+        productId,
+        quantity,
+        email,
+        txid,
         deliveryFee: DELIVERY_FEE,
         cryptoFee: CRYPTO_FEE
       })
@@ -146,7 +193,9 @@ async function submitOrder() {
     const result = await response.json();
 
     if (result.success) {
-      document.getElementById("status").innerText = "Order submitted! Order ID: " + result.orderId;
+      document.getElementById("status").innerText =
+        "Order submitted! Order ID: " + result.orderId;
+
       await loadProducts();
       updateProductInfo();
     } else {
