@@ -71,12 +71,11 @@
   src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624" 
   alt="ETH Wallet QR Code"
   style="margin:15px auto; display:block; background:white; padding:10px; border-radius:8px;"
-<label>choose product:</label>
-<select  id="product">
-     
-    onchange="updateProductInfo()">
-      <option value="">Loading products...</option>
-    </select>
+<label>Choose product:</label>
+
+<select id="product" onchange="updateProductInfo()">
+  <option value="">Loading products...</option>
+</select>
 
     <div class="info">
       <p>Price: €<span id="price">0.00</span></p>
