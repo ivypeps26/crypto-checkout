@@ -190,6 +190,10 @@ updateProductInfo();
   const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
   const amount = document.getElementById("total").innerText;
 
+  function openMoonPay() {
+  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
+  const amount = document.getElementById("total").innerText;
+
   const url =
     "https://buy.moonpay.com/?currencyCode=eth" +
     "&baseCurrencyAmount=" + amount +
@@ -197,14 +201,10 @@ updateProductInfo();
     "&walletAddress=" + encodeURIComponent(wallet);
 
   window.location.href = url;
-  }
-function copyWallet() {
-  const wallet = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
-  navigator.clipboard.writeText(wallet);
-  document.getElementById("status").innerText = "✅ Wallet address copied!";
 }
 
-  }
+loadProducts();
+  
     loadProducts();
   </script>
 </body>
