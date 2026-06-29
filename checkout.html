@@ -114,7 +114,8 @@ async function loadProducts() {
     });
 
   } catch (error) {
-    document.getElementById("total").innerText = (product.price * quantity) + 10;
+   const total = (product.price * quantity) + 10;
+document.getElementById("total").innerText = total.toFixed(2); + 10;
   }
 }
 
