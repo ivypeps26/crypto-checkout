@@ -1,2 +1,184 @@
-# crypto-checkout
-Crypto checkout page connected to Google Sheets
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crypto Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .box {
+      background: #222;
+      max-width: 430px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    select, input, button {
+      width: 95%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 15px;
+    }
+
+    button {
+      background: #00c853;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .wallet {
+      background: #333;
+      padding: 12px;
+      border-radius: 6px;
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    .info {
+      background: #333;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    #status {
+      font-size: 18px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Crypto Checkout (ETH)</h2>
+
+  <p><b>Send ETH to this wallet:</b></p>
+  <div class="wallet"0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
+
+  <label>Choose product:</label>
+  <select id="product" onchange="updateProductInfo()">
+    <option value="">Loading products...</option>
+  </select>
+
+  <div class="info">
+    <p>Price: £<span id="price">0</span></p>
+    <p>Stock: <span id="stock">0</span></p>
+    <p>Total: £<span id="total">0</span></p>
+  </div>
+
+  <label>Quantity:</label>
+  <input type="number" id="quantity" min="1" value="1" onchange="updateProductInfo()">
+
+  <label>Email:</label>
+  <input type="email" id="email" placeholder="Your email">
+
+  <label>Transaction Hash (TXID):</label>
+  <input type="text" id="txid" placeholder="Paste ETH transaction hash">
+
+  <button onclick="submitOrder()">Submit Order</button>
+
+  <p id="status"></p>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
+
+let products = [];
+
+async function loadProducts() {
+  try {
+    const response = await fetch(SCRIPT_URL + "?action=products");
+    products = await response.json();
+
+    const productSelect = document.getElementById("product");
+    productSelect.innerHTML = '<option value="">Select a product</option>';
+
+    products.forEach(product => {
+      const option = document.createElement("option");
+      option.value = product.id;
+      option.textContent = `${product.name} - £${product.price} (${product.stock} in stock)`;
+      productSelect.appendChild(option);
+    });
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error loading products.";
+  }
+}
+
+function updateProductInfo() {
+  const productId = document.getElementById("product").value;
+  const quantity = Number(document.getElementById("quantity").value) || 1;
+
+  const product = products.find(p => p.id === productId);
+
+  if (!product) {
+    document.getElementById("price").innerText = "0";
+    document.getElementById("stock").innerText = "0";
+    document.getElementById("total").innerText = "0";
+    return;
+  }
+
+  document.getElementById("price").innerText = product.price;
+  document.getElementById("stock").innerText = product.stock;
+  document.getElementById("total").innerText = product.price * quantity;
+}
+
+async function submitOrder() {
+  const productId = document.getElementById("product").value;
+  const quantity = Number(document.getElementById("quantity").value);
+  const email = document.getElementById("email").value;
+  const txid = document.getElementById("txid").value;
+
+  if (!productId || !quantity || !email || !txid) {
+    document.getElementById("status").innerText = "Please fill all fields.";
+    return;
+  }
+
+  document.getElementById("status").innerText = "Submitting order...";
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity,
+        email: email,
+        txid: txid
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById("status").innerText =
+        "Order submitted! Order ID: " + result.orderId;
+
+      await loadProducts();
+      updateProductInfo();
+    } else {
+      document.getElementById("status").innerText =
+        "Error: " + result.error;
+    }
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error submitting order.";
+  }
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>
