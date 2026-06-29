@@ -37,18 +37,11 @@
       cursor: pointer;
     }
 
-    .wallet {
+    .wallet, .info {
       background: #333;
       padding: 12px;
       border-radius: 6px;
       word-break: break-all;
-      margin: 10px 0;
-    }
-
-    .info {
-      background: #333;
-      padding: 12px;
-      border-radius: 6px;
       margin: 10px 0;
     }
 
@@ -60,134 +53,127 @@
 </head>
 
 <body>
+  <div class="box">
+    <h2>Crypto Checkout (ETH)</h2>
 
-<div class="box">
-  <h2>Crypto Checkout (ETH)</h2>
+    <p><b>Send ETH to this wallet:</b></p>
+    <div class="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
 
-  <p><b>Send ETH to this wallet:</b></p>
-  <div class="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
+    <label>Choose product:</label>
+    <select id="product" onchange="updateProductInfo()">
+      <option value="">Loading products...</option>
+    </select>
 
-  <label>Choose product:</label>
-  <select id="product" onchange="updateProductInfo()">
-    <option value="">Loading products...</option>
-  </select>
+    <div class="info">
+      <p>Price: €<span id="price">0.00</span></p>
+      <p>Stock: <span id="stock">0</span></p>
+      <p>Express Post: €10.00</p>
+      <p>Total: €<span id="total">0.00</span></p>
+    </div>
 
-  <div class="info">
-    <<p>Price: €<span id="price">0</span></p>
-<p>Express post: €10</p>
-<p>Total: €<span id="total">0</span></p>
-    <p>Total: €<span id="total">0</span></p>
+    <label>Quantity:</label>
+    <input type="number" id="quantity" min="1" value="1" oninput="updateProductInfo()">
+
+    <label>Email:</label>
+    <input type="email" id="email" placeholder="Your email">
+
+    <label>Transaction Hash (TXID):</label>
+    <input type="text" id="txid" placeholder="Paste ETH transaction hash">
+
+    <button onclick="submitOrder()">Submit Order</button>
+
+    <p id="status"></p>
   </div>
 
-  <label>Quantity:</label>
-  <input type="number" id="quantity" min="1" value="1" onchange="updateProductInfo()">
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
+    const DELIVERY_FEE = 10;
 
-  <label>Email:</label>
-  <input type="email" id="email" placeholder="Your email">
+    let products = [];
 
-  <label>Transaction Hash (TXID):</label>
-  <input type="text" id="txid" placeholder="Paste ETH transaction hash">
+    async function loadProducts() {
+      try {
+        const response = await fetch(SCRIPT_URL + "?action=products");
+        products = await response.json();
 
-  <button onclick="submitOrder()">Submit Order</button>
+        const productSelect = document.getElementById("product");
+        productSelect.innerHTML = '<option value="">Select a product</option>';
 
-  <p id="status"></p>
-</div>
+        products.forEach(product => {
+          const option = document.createElement("option");
+          option.value = product.id;
+          option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
+          productSelect.appendChild(option);
+        });
 
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
-
-let products = [];
-
-
-
-async function loadProducts() {
-  try {
-    const response = await 
-      fetch(SCRIPT_URL + "?
-            action=products");
-    products = await response.json();
-
-    const productSelect = document.getElementById("product");
-    productSelect.innerHTML = '<option value="">Select a product</option>';
-
-    products.forEach(product => {
-      const option = document.createElement("option");
-      option.value = product.id;
-      option.textContent = `${product.name} - €${product.price} (${product.stock} in stock)`;
-      productSelect.appendChild(option);
-    });
-
-  } catch (error) {
-    document.getElementById("status").innerText = "Error loading products.";
-  }
-}
-
-function updateProductInfo() {
-  const productId = document.getElementById("product").value;
-  const quantity = Number(document.getElementById("quantity").value) || 1;
-  const deliveryFee = 10;
-
-  const product = products.find(p => p.id === productId);
-
-  if (!product) {
-    document.getElementById("price").innerText = "0.00";
-    document.getElementById("stock").innerText = "0";
-    document.getElementById("total").innerText = "0.00";
-    return;
-  }
-
-  const total = (Number(product.price) * quantity) + deliveryFee;
-
-  document.getElementById("price").innerText = Number(product.price).toFixed(2);
-  document.getElementById("stock").innerText = product.stock;
-  document.getElementById("total").innerText = total.toFixed(2);
-}
-
-async function submitOrder() {
-  const productId = document.getElementById("product").value;
-  const quantity = Number(document.getElementById("quantity").value);
-  const email = document.getElementById("email").value;
-  const txid = document.getElementById("txid").value;
-
-  if (!productId || !quantity || !email || !txid) {
-    document.getElementById("status").innerText = "Please fill all fields.";
-    return;
-  }
-
-  document.getElementById("status").innerText = "Submitting order...";
-
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        productId: productId,
-        quantity: quantity,
-        email: email,
-        txid: txid
-      })
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      document.getElementById("status").innerText =
-        "Order submitted! Order ID: " + result.orderId;
-
-      await loadProducts();
-      updateProductInfo();
-    } else {
-      document.getElementById("status").innerText =
-        "Error: " + result.error;
+        document.getElementById("status").innerText = "";
+      } catch (error) {
+        document.getElementById("status").innerText = "Error loading products.";
+      }
     }
 
-  } catch (error) {
-    document.getElementById("status").innerText = "Error submitting order.";
-  }
-}
+    function updateProductInfo() {
+      const productId = document.getElementById("product").value;
+      const quantity = Number(document.getElementById("quantity").value) || 1;
+      const product = products.find(p => p.id === productId);
 
-loadProducts();
-</script>
+      if (!product) {
+        document.getElementById("price").innerText = "0.00";
+        document.getElementById("stock").innerText = "0";
+        document.getElementById("total").innerText = "0.00";
+        return;
+      }
 
+      const itemTotal = Number(product.price) * quantity;
+      const total = itemTotal + DELIVERY_FEE;
+
+      document.getElementById("price").innerText = Number(product.price).toFixed(2);
+      document.getElementById("stock").innerText = product.stock;
+      document.getElementById("total").innerText = total.toFixed(2);
+    }
+
+    async function submitOrder() {
+      const productId = document.getElementById("product").value;
+      const quantity = Number(document.getElementById("quantity").value);
+      const email = document.getElementById("email").value.trim();
+      const txid = document.getElementById("txid").value.trim();
+
+      if (!productId || !quantity || !email || !txid) {
+        document.getElementById("status").innerText = "Please fill all fields.";
+        return;
+      }
+
+      document.getElementById("status").innerText = "Submitting order...";
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            email: email,
+            txid: txid,
+            deliveryFee: DELIVERY_FEE
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById("status").innerText =
+            "Order submitted! Order ID: " + result.orderId;
+
+          await loadProducts();
+          updateProductInfo();
+        } else {
+          document.getElementById("status").innerText = "Error: " + result.error;
+        }
+      } catch (error) {
+        document.getElementById("status").innerText = "Error submitting order.";
+      }
+    }
+
+    loadProducts();
+  </script>
 </body>
 </html>
-      
