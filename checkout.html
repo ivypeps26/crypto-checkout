@@ -73,8 +73,8 @@
   </select>
 
   <div class="info">
-    <p>Price: £<span id="price">0</span></p>
-    <p>Stock: <span id="stock">0</span></p>
+    <<p>Price: €<span id="price">0</span></p>
+<p>Total: €<span id="total">0</span></p>
     <p>Total: £<span id="total">0</span></p>
   </div>
 
@@ -108,7 +108,7 @@ async function loadProducts() {
     products.forEach(product => {
       const option = document.createElement("option");
       option.value = product.id;
-      option.textContent = `${product.name} - £${product.price} (${product.stock} in stock)`;
+      option.textContent = `${product.name} - €${product.price} (${product.stock} in stock)`;
       productSelect.appendChild(option);
     });
 
