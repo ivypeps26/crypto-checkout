@@ -88,6 +88,7 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
     const DELIVERY_FEE = 10;
+    const CRYPTO_FEE = 5;
 
     let products = [];
 
@@ -125,7 +126,7 @@
       }
 
       const itemTotal = Number(product.price) * quantity;
-      const total = itemTotal + DELIVERY_FEE;
+      const total = itemTotal + DELIVERY_FEE + CRYPTO_FEE;
 
       document.getElementById("price").innerText = Number(product.price).toFixed(2);
       document.getElementById("stock").innerText = product.stock;
