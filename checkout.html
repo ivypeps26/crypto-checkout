@@ -128,16 +128,20 @@ async function updateTotal() {
 // ADD THIS HERE
 const productId = document.getElementById("product").value;
 const product = products.find(p => p.id == productId);
+
+if (!product) {
+  return;
+}
+
 document.getElementById("quantity").max = product.stock;
-if (product && quantity > Number(product.stock)) {
+
+if (quantity > Number(product.stock)) {
   alert("Only " + product.stock + " items are in stock.");
   document.getElementById("quantity").value = product.stock;
   return;
 }
 
-// THEN KEEP THIS
 const total = (Number(product.price) * quantity) + DELIVERY_FEE + CRYPTO_FEE;
-
   document.getElementById("total").innerText = total.toFixed(2);
 
   // rest of your ETH calculation...
