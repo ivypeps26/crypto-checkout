@@ -134,6 +134,11 @@ function updateProductInfo() {
   document.getElementById("stock").innerText = product.stock;
   document.getElementById("total").innerText = product.price * quantity;
 }
+  loadProducts();
+</script>
+
+</body>
+</html>
 
 async function submitOrder() {
   const productId = document.getElementById("product").value;
