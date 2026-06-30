@@ -156,7 +156,8 @@ const total = (Number(product.price) * quantity) + DELIVERY_FEE + CRYPTO_FEE;
     currentEthAmount = (total / ethRate).toFixed(6);
     document.getElementById("ethAmount").innerText = currentEthAmount + " ETH";
   } catch (error) {
-    document.getElementById("ethAmount").innerText = "Rate unavailable";
+  document.getElementById("ethAmount").innerText = "Rate unavailable";
+  document.getElementById("status").innerText = "ETH error: " + error.message;
   }
 }
 
