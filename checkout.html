@@ -149,10 +149,7 @@ async function updateTotal() {
   } catch (error) {
     document.getElementById("ethAmount").innerText = "Rate unavailable";
   }
-}
-  document.getElementById("status").innerText = "ETH error: " + error.message;
-  }
-}
+
 
 function copyWallet() {
   navigator.clipboard.writeText(WALLET);
