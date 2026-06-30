@@ -144,13 +144,12 @@ async function loadProducts() {
 async function updateTotal() {
   const productSelect = document.getElementById("product");
   const selectedOption = productSelect.options[productSelect.selectedIndex];
-const price = Number(selectedOption.getAttribute("data-price"));
+
+  if (!selectedOption) return;
+
+  const price = Number(selectedOption.getAttribute("data-price")) || 0;
   let quantity = Number(document.getElementById("quantity").value) || 1;
-
- 
   const stock = Number(selectedOption.getAttribute("data-stock")) || 999;
-
-  document.getElementById("quantity").max = stock;
 
   if (quantity > stock) {
     alert("Only " + stock + " items are in stock.");
