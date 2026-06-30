@@ -148,6 +148,7 @@ function updateProductInfo() {
   document.getElementById("price").innerText = Number(product.price).toFixed(2);
   document.getElementById("stock").innerText = product.stock;
   document.getElementById("total").innerText = total.toFixed(2);
+  updateEthAmount();
 }
 
 function copyWallet() {
