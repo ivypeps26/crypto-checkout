@@ -79,7 +79,14 @@
   </div>
 
   <label>Quantity:</label>
-  <input type="number" id="quantity" min="1" value="1" onchange="updateProductInfo()">
+  <input
+  type="number"
+  id="quantity"
+  min="1"
+  value="1"
+  oninput="updateProductInfo()"
+  onchange="updateProductInfo()">
+  
 
   <label>Email:</label>
   <input type="email" id="email" placeholder="Your email">
@@ -135,14 +142,15 @@ function updateProductInfo() {
  document.getElementById("quantity").max = product.stock; document.getElementById("total").innerText = product.price * quantity;
 }
   async function submitOrder() {
-  // submit order code here
+  
 }
 
 loadProducts();
 </script>
 </body>
 </html>
-  const productId = document.getElementById("product").value;
+  const productid =
+  document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value);
   const email = document.getElementById("email").value;
   const txid = document.getElementById("txid").value;
