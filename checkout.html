@@ -55,13 +55,8 @@ img {
   margin-top: 15px;
 }
 </style>
-  <head>
-  <title>IVY PEPTIDES- Crypto Checkout (ETH)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    /* your CSS goes here */
-  </style>
-  </head>
+
+ 
  
 <body style="font-family:Arial;background:#111;color:white;text-align:center;padding:20px;">
 
@@ -116,13 +111,14 @@ img {
 </div>
 
 <script>
-const WALLET = const WALLET = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
+const WALLET = "0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624";
 const DELIVERY_FEE = 10;
 const CRYPTO_FEE = 5;
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec";
 
 let currentEthAmount = "";
+
 async function loadProducts() {
   const response = await fetch(SCRIPT_URL + "?action=products");
   const products = await response.json();
@@ -141,6 +137,7 @@ async function loadProducts() {
 
   updateTotal();
 }
+
 async function updateTotal() {
   const productSelect = document.getElementById("product");
   const selectedOption = productSelect.options[productSelect.selectedIndex];
@@ -170,8 +167,8 @@ async function updateTotal() {
   } catch (error) {
     document.getElementById("ethAmount").innerText = "Rate unavailable";
   }
-
 }
+
 function copyWallet() {
   navigator.clipboard.writeText(WALLET);
   document.getElementById("status").innerText = "Wallet copied.";
