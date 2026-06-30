@@ -132,7 +132,7 @@ function updateProductInfo() {
 
   document.getElementById("price").innerText = product.price;
   document.getElementById("stock").innerText = product.stock;
-  document.getElementById("total").innerText = product.price * quantity;
+ document.getElementById("quantity").max = product.stock; document.getElementById("total").innerText = product.price * quantity;
 }
   async function submitOrder() {
   // submit order code here
