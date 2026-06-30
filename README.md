@@ -107,8 +107,8 @@ async function loadProducts() {
 
     products.forEach(product => {
       const option = document.createElement("option");
-      option.value = product.id;
-      option.textContent = `${product.name} - £${product.price} (${product.stock} in stock)`;
+  option.value = product.id;
+option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
       productSelect.appendChild(option);
     });
 
@@ -134,13 +134,14 @@ function updateProductInfo() {
   document.getElementById("stock").innerText = product.stock;
   document.getElementById("total").innerText = product.price * quantity;
 }
-  loadProducts();
-</script>
+  async function submitOrder() {
+  // submit order code here
+}
 
+loadProducts();
+</script>
 </body>
 </html>
-
-async function submitOrder() {
   const productId = document.getElementById("product").value;
   const quantity = Number(document.getElementById("quantity").value);
   const email = document.getElementById("email").value;
