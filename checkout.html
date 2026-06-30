@@ -174,8 +174,42 @@ function openMoonPay() {
   window.location.href = url;
 }
 
-function submitOrder() {
-  document.getElementById("status").innerText = "Order submitted.";
+async function submitOrder() {
+  const product = document.getElementById("product").selectedOptions[0].text;
+  const quantity = document.getElementById("quantity").value;
+  const total = document.getElementById("total").innerText;
+  const email = document.getElementById("email").value;
+  const txid = document.getElementById("txid").value;
+
+  if (!email || !txid) {
+    alert("Please enter your email and transaction ID.");
+    return;
+  }
+
+  document.getElementById("status").innerText = "Submitting order...";
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        product,
+        quantity,
+        total,
+        email,
+        txid,
+        wallet: WALLET,
+        ethAmount: currentEthAmount
+      })
+    });
+
+    const result = await response.json();
+
+    document.getElementById("status").innerText =
+      result.message || "Order submitted successfully!";
+  } catch (err) {
+    document.getElementById("status").innerText =
+      "Error submitting order.";
+  }
 }
 
 updateTotal();
