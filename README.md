@@ -118,6 +118,8 @@ async function loadProducts() {
 option.textContent = `${product.name} - €${Number(product.price).toFixed(2)} (${product.stock} in stock)`;
       productSelect.appendChild(option);
     });
+   
+    updateProductInfo();
 
   } catch (error) {
     document.getElementById("status").innerText = "Error loading products.";
