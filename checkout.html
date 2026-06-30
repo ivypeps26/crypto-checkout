@@ -48,14 +48,14 @@
   <input type="email" id="email" placeholder="Customer email">
   <input type="text" id="txid" placeholder="Transaction hash">
 
-  <button onclick="submitOrder()">Submit Demo Order</button>
+  <button onclick="submitOrder()">Submit Order</button>
 
   <p id="status"></p>
 </div>
 
 <script>
-const WALLET = 0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624;
-const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz0ExRI3CMthaZR9KD9z3_e2xAErssndaCtEDjx0D_yupYvN8VHvAVszTvgiYWoNQLo/exec
+const WALLET = "your_eth_wallet";
+const SCRIPT_URL = "your_apps_script_url";
 const DELIVERY_FEE = 10;
 const CRYPTO_FEE = 5;
 
@@ -68,9 +68,16 @@ function updateTotal() {
 
   document.getElementById("total").innerText = total.toFixed(2);
 
-  const ethRate = 3000;
-  currentEthAmount = (total / ethRate).toFixed(6);
-  document.getElementById("ethAmount").innerText = currentEthAmount + " ETH";
+fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur")
+  .then(response => response.json())
+  .then(data => {
+    const ethRate = data.ethereum.eur;
+    currentEthAmount = (total / ethRate).toFixed(6);
+    document.getElementById("ethAmount").innerText = currentEthAmount + " ETH";
+  })
+  .catch(error => {
+    document.getElementById("ethAmount").innerText = "Rate unavailable";
+  });
 }
 
 function copyWallet() {
