@@ -65,7 +65,7 @@
   <h2>Crypto Checkout (ETH)</h2>
 
   <p><b>Send ETH to this wallet:</b></p>
-  <div class="wallet"0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
+  <div class="wallet">0xD5a0E7c34ad05b52906a2e0B7103b62fE77eE624</div>
 
   <label>Choose product:</label>
   <select id="product" onchange="updateProductInfo()">
