@@ -132,15 +132,22 @@ async function loadProducts() {
 
   products.forEach(product => {
     const option = document.createElement("option");
-    option.value = product.price;
+    option.value = product.id;
+    option.setAttribute("data-price", product.price);
     option.setAttribute("data-stock", product.stock);
-    option.textContent =
+    option.textContent = `${product.name} - €${product.price} (${product.stock} in stock)`;
+    productSelect.appendChild(option);
+  });
+
+  updateTotal();
+}
 async function updateTotal() {
   const productSelect = document.getElementById("product");
-  const price = Number(productSelect.value);
+  const selectedOption = productSelect.options[productSelect.selectedIndex];
+const price = Number(selectedOption.getAttribute("data-price"));
   let quantity = Number(document.getElementById("quantity").value) || 1;
 
-  const selectedOption = productSelect.options[productSelect.selectedIndex];
+ 
   const stock = Number(selectedOption.getAttribute("data-stock")) || 999;
 
   document.getElementById("quantity").max = stock;
